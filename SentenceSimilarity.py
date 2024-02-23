@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 
 
 class CrossSimilarity:
-    def __init__(self, model_name='sentence-transformers/paraphrase-MiniLM-L6-v2', threshold=0.6, rt=0.3):
+    def __init__(self, model_name='sentence-transformers/all-mpnet-base-v2', threshold=0.6, rt=0.3):
         self.model = SentenceTransformer(model_name)
         self.thresh = threshold
         self.propose_rate = rt
