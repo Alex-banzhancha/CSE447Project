@@ -1,2 +1,4 @@
 wandb
 t5-small-finetuned-xsum
+t5-large-finetuned-multi-news
+t5-base-finetuned-multi-news
