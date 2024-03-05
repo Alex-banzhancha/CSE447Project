@@ -3,7 +3,7 @@ import transformers
 print(transformers.__version__)
 
 # %%
-model_checkpoint = "t5-base"
+model_checkpoint = "t5-large"
 
 # %%
 from datasets import load_dataset
@@ -51,7 +51,7 @@ from transformers import AutoModelForSeq2SeqLM, DataCollatorForSeq2Seq, Seq2SeqT
 model = AutoModelForSeq2SeqLM.from_pretrained(model_checkpoint)
 
 # %%
-batch_size = 2
+batch_size = 1
 model_name = model_checkpoint.split("/")[-1]
 args = Seq2SeqTrainingArguments(
     f"{model_name}-finetuned-multi-news",
