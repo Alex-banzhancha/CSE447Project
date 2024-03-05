@@ -38,18 +38,17 @@ class CrossSimilarity:
         res_tensor = torch.unique(res_tensor)
         return res_tensor
 
-    def eval(self, text, summary):
+    def compute(self, text, summary):
         text = text.split(".")
         summary = summary.split(".")
         text_embd, summary_embd = self.__tokenize(text, summary)
         masked_cross_sim = self.__masked_cross_sim(text_embd, summary_embd)
         proposed = self.__sentences_propose(masked_cross_sim, text_embd)
-        print(f"Given keep rate {self.propose_rate}, we finally generate {proposed.shape[0]}, with"
-              f"final rate {proposed.shape[0] * 1.0 / text_embd.shape[0]:.4f}")
-        res = []
+        final_kr = proposed.shape[0] * 1.0 / text_embd.shape[0]
+        res = ""
         for i in proposed.tolist():
-            res.append(text[i])
-        return res
+            res = res + text[i]
+        return res, final_kr
 
     def __propose(self, target, text_embd, num_propose):
         # return a list of sentence index
@@ -66,7 +65,7 @@ class CrossSimilarity:
             a = args[i]
             for j in range(n):
                 b = args[j]
-                sim = f.cosine_similarity(text_embd[a], text_embd[b], dim=-1)
+                sim = f.cosine_similarity(text_embd[a], text_embd[b], dim=0)
                 cache_local[i, j] = cache_local[j, i] = sim
         chosen = [args[0].item()]
         chose_args = [0]
@@ -90,16 +89,3 @@ class CrossSimilarity:
                 idx = i
         assert idx != -1
         return idx, args[idx].item()
-
-
-sentences = ["Hello World", "Hallo West"]
-
-billsum = load_dataset("billsum", split="ca_test")
-
-cs = CrossSimilarity()
-r = random.Random()
-for i in range(10):
-    idx: int = r.randint(0, len(billsum))
-    print(cs.eval(billsum[idx]['text'], billsum[idx]['summary']))
-'''for i in tqdm(range(len(billsum))):
-    cs.compute(billsum[i]['text'], billsum[i]['summary'])'''
